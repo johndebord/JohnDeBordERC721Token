@@ -71,9 +71,9 @@ contract JohnDeBordERC721Token is ERC721 {
         bytes4(keccak256("totalSupply()")) ^
         bytes4(keccak256("balanceOf(address)")) ^
         bytes4(keccak256("ownerOf(uint256)")) ^
-        bytes4(keccak256("approve(address,uint256)")) ^
         bytes4(keccak256("transfer(address,uint256)")) ^
         bytes4(keccak256("transferFrom(address,address,uint256)")) ^
+        bytes4(keccak256("approve(address,uint256)")) ^
         bytes4(keccak256("tokensOfOwner(address)"));
 
 
@@ -119,7 +119,7 @@ contract JohnDeBordERC721Token is ERC721 {
         ++ownershipTokenCount[_to];
         tokenIndexToOwner[_tokenId] = _to;
 
-        if (_from != address(0)) {
+        if (_from != address(0x0)) {
             --ownershipTokenCount[_from];
             delete tokenIndexToApproved[_tokenId];
         }
@@ -133,6 +133,7 @@ contract JohnDeBordERC721Token is ERC721 {
             mintedAt: uint64(now)
         });
         tokenId = tokens.push(token) - 1;
+        ++totalSupply;
 
         emit Mint(_owner, tokenId);
 
@@ -152,10 +153,10 @@ contract JohnDeBordERC721Token is ERC721 {
         return ownershipTokenCount[_owner];
     }
 
-    function ownerOf(uint256 _tokenId) external view returns (address owner) {
+    function ownerOf(uint256 _tokenId) external view returns (address) {
         require(tokenIndexToOwner[_tokenId] != address(0x0));
 
-        owner = tokenIndexToOwner[_tokenId];
+        return tokenIndexToOwner[_tokenId];
     }
 
     function transfer(address _to, uint256 _tokenId) external isValidAddress(_to) {
@@ -165,8 +166,8 @@ contract JohnDeBordERC721Token is ERC721 {
     }
 
     function transferFrom(address _from, address _to, uint256 _tokenId) external isValidAddress(_to) {
-        require(_approvedFor(msg.sender, _tokenId));
         require(_owns(_from, _tokenId));
+        require(_approvedFor(msg.sender, _tokenId));
 
         _transfer(_from, _to, _tokenId);
     }
@@ -187,8 +188,7 @@ contract JohnDeBordERC721Token is ERC721 {
             uint256 maxTokenId = totalSupply;
             uint256 idx = 0;
 
-            uint256 tokenId;
-            for (tokenId = 1; tokenId <= maxTokenId; ++tokenId) {
+            for (uint256 tokenId = 0; tokenId < maxTokenId; ++tokenId) {
                 if (tokenIndexToOwner[tokenId] == _owner) {
                     result[idx] = tokenId;
                     ++idx;
