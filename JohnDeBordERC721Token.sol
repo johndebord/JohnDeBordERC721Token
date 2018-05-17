@@ -1,3 +1,18 @@
+/*******************************************************
+* Primary contract name:                               *
+*   JohnDeBordTokenERC721Token                         *
+*                                                      *
+* Author:                                              *
+*   John DeBord                                        *
+*                                                      *
+* Date created:                                        *
+*   05/15/2018                                         *
+*                                                      *
+* Purpose:                                             *
+*   Personal ERC721 standard compliant token           *
+********************************************************/
+
+
 pragma solidity ^0.4.23;
 
 
@@ -53,7 +68,8 @@ contract ERC721 {
     function supportsInterface(bytes4 _interfaceID) external view returns (bool);
 }
 
-
+/// @title JohnDeBordERC721Token
+/// @dev Full implementation of JohnDeBordTokenERC721Token
 contract JohnDeBordERC721Token is ERC721 {
     using SafeMath for uint256;
 
